@@ -1,0 +1,8 @@
+{"prompt":"什么是机器学习？","response":"机器学习是通过数据训练模型，使模型能够识别规律并对新数据进行预测的方法。"}
+{"prompt":"请介绍一下你自己。","response":"我是一个本地运行的 AI 助手，可以帮助你学习、写作和分析问题。"}
+{"prompt":"如何开始学习 Python？","response":"先学习变量、条件判断、循环和函数，再通过小项目练习。每天运行并修改一些简单代码会很有帮助。"}
+{"prompt":"为什么训练集和测试集要分开？","response":"训练集用于学习参数，测试集用于评估模型对未见过的数据的表现。分开可以避免高估模型的泛化能力。"}
+{"prompt":"计算 3 加 5。","response":"3 加 5 等于 8。"}
+{"prompt":"What is a good way to debug code?","response":"Reproduce the error with a small example, inspect the inputs and traceback, then test one change at a time."}
+{"prompt":"Explain overfitting in one sentence.","response":"Overfitting happens when a model memorizes training examples and performs poorly on new data."}
+{"messages":[{"role":"system","content":"请用简洁、准确的中文回答。"},{"role":"user","content":"什么是 LoRA？"},{"role":"assistant","content":"LoRA 冻结模型原有权重，只训练少量低秩矩阵，以降低微调所需的显存和参数量。"}]}

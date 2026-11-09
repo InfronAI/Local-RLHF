@@ -1,0 +1,73 @@
+{
+  "torch": "2.15.0",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct with the verified local SFT adapter",
+  "comparisons": [
+    {
+      "row": 1,
+      "cpu_norm": 20.512232726205266,
+      "mps_norm": 20.512053429242442,
+      "norm_ratio": 0.9999912590225932,
+      "cosine": 0.9999999997043243,
+      "passed": true
+    },
+    {
+      "row": 2,
+      "cpu_norm": 3.0190938826830904,
+      "mps_norm": 3.019076826056998,
+      "norm_ratio": 0.9999943504154706,
+      "cosine": 0.9999999996909856,
+      "passed": true
+    },
+    {
+      "row": 3,
+      "cpu_norm": 5.136593227694027,
+      "mps_norm": 5.136554068263823,
+      "norm_ratio": 0.9999923763809071,
+      "cosine": 0.9999999945831097,
+      "passed": true
+    },
+    {
+      "row": 4,
+      "cpu_norm": 6.52299152615527,
+      "mps_norm": 6.522906863063558,
+      "norm_ratio": 0.9999870208183819,
+      "cosine": 0.9999999937018469,
+      "passed": true
+    },
+    {
+      "row": 5,
+      "cpu_norm": 11.778270760629596,
+      "mps_norm": 11.77824881220427,
+      "norm_ratio": 0.9999981365324526,
+      "cosine": 0.9999999992732179,
+      "passed": true
+    },
+    {
+      "row": 6,
+      "cpu_norm": 8.150368616238339,
+      "mps_norm": 8.1500576441103,
+      "norm_ratio": 0.9999618456363533,
+      "cosine": 0.9999999986249497,
+      "passed": true
+    },
+    {
+      "row": 7,
+      "cpu_norm": 11.168971113976529,
+      "mps_norm": 11.168822645865083,
+      "norm_ratio": 0.9999867070914652,
+      "cosine": 0.9999999988482563,
+      "passed": true
+    },
+    {
+      "row": 8,
+      "cpu_norm": 13.519410473941772,
+      "mps_norm": 13.519440949512171,
+      "norm_ratio": 1.0000022542085292,
+      "cosine": 0.9999999986684986,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "base_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "sft_adapter_sha256": "1185e669ccdfb2cb1f0875ba9f575ce99419042dce5408b4386bafe71077aa10"
+}

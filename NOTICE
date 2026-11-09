@@ -1,0 +1,13 @@
+Local RLHF
+Copyright (c) 2026 InfronAI
+
+This project was rebuilt from the SFT, reward modeling and PPO workflow in
+DeepSpeed-Chat, part of Microsoft / DeepSpeed's DeepSpeedExamples project.
+Upstream: https://github.com/deepspeedai/DeepSpeedExamples
+Source revision: 0c6dd5e (the original local checkout)
+Upstream copyright: Copyright (c) Microsoft Corporation.
+Upstream license: Apache License, Version 2.0; retained in LICENSE.upstream.
+
+The new local implementation is distributed under the MIT license in LICENSE.
+The original DeepSpeed runtime, CUDA launchers and unrelated examples are not
+part of this distribution. No upstream endorsement is implied.

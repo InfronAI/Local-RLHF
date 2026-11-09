@@ -1,0 +1,7 @@
+# Tested with native arm64 Python 3.11 on Apple Silicon.
+torch==2.15.0
+transformers==4.56.2
+peft==0.17.1
+accelerate==1.10.1
+safetensors>=0.4.3,<1
+psutil>=5.9,<8

@@ -1,0 +1,80 @@
+{
+  "date": "2026-11-09",
+  "hardware": "Apple M1 Pro",
+  "unified_memory_gib": 16,
+  "python": "3.11.16",
+  "macos": "26.6.1",
+  "torch": "2.15.0",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "config": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "device": "auto",
+    "max_length": 256,
+    "max_prompt_length": 128,
+    "max_new_tokens": 64,
+    "batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "gradient_checkpointing": true,
+    "lora_rank": 8,
+    "learning_rate": 0.0001,
+    "epochs": 1,
+    "max_steps": 100,
+    "seed": 42
+  },
+  "stages": {
+    "sft": {
+      "optimizer_steps": 1,
+      "elapsed_seconds": 3.4434856669977307,
+      "device": "mps",
+      "max_sampled_memory_gib": {
+        "rss_gib": 0.2841949462890625,
+        "mps_allocated_gib": 1.8816633224487305,
+        "mps_driver_gib": 2.6236572265625
+      },
+      "examples": 8,
+      "evaluation": {}
+    },
+    "reward": {
+      "optimizer_steps": 1,
+      "elapsed_seconds": 2.662839708151296,
+      "device": "mps",
+      "max_sampled_memory_gib": {
+        "rss_gib": 0.526580810546875,
+        "mps_allocated_gib": 1.8819670677185059,
+        "mps_driver_gib": 2.6119384765625
+      },
+      "examples": 8,
+      "evaluation": {}
+    },
+    "ppo": {
+      "optimizer_steps": 2,
+      "elapsed_seconds": 27.60329324984923,
+      "device": "mps",
+      "max_sampled_memory_gib": {
+        "rss_gib": 0.4111785888671875,
+        "mps_allocated_gib": 3.767369031906128,
+        "mps_driver_gib": 4.69512939453125
+      },
+      "examples": 8
+    }
+  },
+  "notes": [
+    "Times exclude loading and downloads.",
+    "Memory records are samples, not true peaks.",
+    "Tiny bundled datasets do not demonstrate model quality."
+  ],
+  "unit_tests_passed": 12,
+  "dpo": {
+    "optimizer_steps": 1,
+    "elapsed_seconds": 3.6578340840060264,
+    "device": "mps",
+    "max_sampled_memory_gib": {
+      "rss_gib": 0.5800323486328125,
+      "mps_allocated_gib": 1.8839712142944336,
+      "mps_driver_gib": 2.639404296875
+    },
+    "examples": 8,
+    "evaluation": {}
+  }
+}

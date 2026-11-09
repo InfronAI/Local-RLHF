@@ -1,0 +1,8 @@
+{"prompt":"什么是机器学习？","chosen":"机器学习通过数据学习规律，再对新数据进行预测或决策。","rejected":"机器学习就是电脑自己随机猜答案。"}
+{"prompt":"计算 3 加 5。","chosen":"3 加 5 等于 8。","rejected":"3 加 5 等于 15。"}
+{"prompt":"训练集和测试集有什么区别？","chosen":"训练集用来学习参数，测试集用来评估模型在未见数据上的表现。","rejected":"完全没有区别，把测试集也拿去训练就行。"}
+{"prompt":"程序报错时应该怎么办？","chosen":"先阅读错误信息，构造最小复现，再逐项检查输入和相关代码。","rejected":"不看错误信息，随便删除代码直到不报错。"}
+{"prompt":"为什么要备份文件？","chosen":"备份能帮助你在误删、设备损坏或数据丢失后恢复重要文件。","rejected":"备份没有任何用途。"}
+{"prompt":"What is overfitting?","chosen":"A model fits the training data too closely and fails to generalize to new examples.","rejected":"A model always becomes perfect if it trains long enough."}
+{"prompt":"How should I learn Python?","chosen":"Learn the basic syntax and practice by building small programs with tests.","rejected":"Memorize every library before writing any code."}
+{"prompt":"什么是 LoRA？","chosen":"LoRA 通过训练低秩增量矩阵，以较少的可训练参数完成模型微调。","rejected":"LoRA 意味着重新训练模型全部参数，因此不节省内存。"}
