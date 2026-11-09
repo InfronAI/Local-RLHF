@@ -19,6 +19,63 @@ Run the classic **SFT → Reward Model → PPO** pipeline on a Mac. Local RLHF u
 
 The actor and reference share a frozen transformer base with separate adapters. The critic and reward model share another frozen base with separate adapters and heads. **Their trainable parameters remain independent.** This retains all four PPO roles while avoiding four full model copies.
 
+## Data flow
+
+The three datasets serve different purposes. SFT and reward checkpoints initialize PPO; the final actor is used for chat. DPO is an optional branch after SFT.
+
+```mermaid
+flowchart LR
+    SFTData["sft.jsonl<br/>Prompts + demonstrations"] --> SFT["Supervised fine-tuning"]
+    PreferenceData["preferences.jsonl<br/>Chosen / rejected pairs"] --> RM["Reward model training"]
+    PromptData["prompts.jsonl<br/>Prompts only"] --> PPO["PPO training"]
+    SFT --> SFTCheckpoint["SFT adapter + tokenizer"]
+    RM --> RMCheckpoint["Reward adapter + scalar head"]
+    SFTCheckpoint -->|"Actor + reference initialization"| PPO
+    RMCheckpoint -->|"Critic + reward initialization"| PPO
+    PPO --> ActorCheckpoint["PPO actor checkpoint"]
+    PPO --> CriticCheckpoint["PPO critic checkpoint"]
+    ActorCheckpoint --> Chat["examples/chat.py"]
+    SFTCheckpoint --> Chat
+    SFTCheckpoint -.-> DPO["Optional DPO training"]
+    PreferenceData -.-> DPO
+    DPO -.-> DPOCheckpoint["DPO adapter + tokenizer"]
+    DPOCheckpoint -.-> Chat
+```
+
+Checkpoints store adapters and tokenizer files, plus scalar-head weights where applicable. The frozen base model is loaded separately from the local/Hugging Face cache.
+
+## PPO architecture and update loop
+
+Each box below represents a model role, not a separate full model copy. The two groups share immutable base weights internally; actor and critic adapters are optimized independently.
+
+```mermaid
+flowchart TB
+    Prompt["Prompt"] --> Actor
+    subgraph PolicyBase["One frozen policy backbone"]
+        Actor["Actor<br/>Trainable LoRA"]
+        Reference["Reference<br/>Frozen SFT LoRA"]
+    end
+    Actor --> Sequence["Prompt + sampled response"]
+    Sequence --> Reference
+    Sequence --> Reward
+    Sequence --> Critic
+    subgraph ValueBase["One frozen reward / value backbone"]
+        Reward["Reward model<br/>Frozen LoRA + scalar head"]
+        Critic["Critic<br/>Trainable LoRA + value head"]
+    end
+    Actor -->|"Stored rollout log probabilities"| KL["Token-level KL penalty"]
+    Reference -->|"Reference log probabilities"| KL
+    KL --> Rewards["Per-token rewards"]
+    Reward -->|"Clipped terminal score"| Rewards
+    Rewards --> GAE["GAE advantages + returns"]
+    Critic -->|"Stored rollout values"| GAE
+    GAE --> Update["PPO updates<br/>Clipped policy loss + clipped value loss"]
+    Update -->|"Actor optimizer"| Actor
+    Update -->|"Critic optimizer"| Critic
+```
+
+Reference and reward parameters remain fixed throughout PPO. Each rollout group is reused for the configured PPO epochs before fresh responses are generated.
+
 ## Quick start
 
 Use native **arm64 Python 3.11 or newer** on macOS with MPS support. The documented environment was tested with Python 3.11 and PyTorch 2.15.0.

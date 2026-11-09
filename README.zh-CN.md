@@ -19,6 +19,63 @@ A complete local RLHF training toolkit for Apple Silicon, featuring supervised f
 
 Actor 与 Reference 共用一个冻结底座，使用独立 LoRA；Critic 与 Reward 共用另一个冻结底座，使用独立 LoRA 和标量头。**可训练参数相互独立**，四个 PPO 角色完整保留，同时减少底座副本带来的内存占用。
 
+## 数据流图
+
+三类数据分别驱动不同的训练阶段。SFT 和奖励模型的检查点用于初始化 PPO，训练后的 Actor 用于聊天；DPO 是 SFT 之后的可选分支。
+
+```mermaid
+flowchart LR
+    SFTData["sft.jsonl<br/>Prompt 与示范回答"] --> SFT["监督微调 SFT"]
+    PreferenceData["preferences.jsonl<br/>chosen / rejected 偏好对"] --> RM["奖励模型训练"]
+    PromptData["prompts.jsonl<br/>仅包含 Prompt"] --> PPO["PPO 训练"]
+    SFT --> SFTCheckpoint["SFT 适配器与分词器"]
+    RM --> RMCheckpoint["奖励适配器与标量头"]
+    SFTCheckpoint -->|"初始化 Actor 与 Reference"| PPO
+    RMCheckpoint -->|"初始化 Critic 与 Reward"| PPO
+    PPO --> ActorCheckpoint["PPO Actor 检查点"]
+    PPO --> CriticCheckpoint["PPO Critic 检查点"]
+    ActorCheckpoint --> Chat["examples/chat.py 对话"]
+    SFTCheckpoint --> Chat
+    SFTCheckpoint -.-> DPO["可选 DPO 训练"]
+    PreferenceData -.-> DPO
+    DPO -.-> DPOCheckpoint["DPO 适配器与分词器"]
+    DPOCheckpoint -.-> Chat
+```
+
+检查点保存适配器、分词器，以及适用的标量头权重；冻结底座从本地目录或 Hugging Face 缓存单独加载。
+
+## PPO 架构与更新流程
+
+图中的四个方框表示四种模型角色。每组内部共享不可变的底座权重，Actor 和 Critic 的适配器分别优化。
+
+```mermaid
+flowchart TB
+    Prompt["输入 Prompt"] --> Actor
+    subgraph PolicyBase["一个冻结的策略底座"]
+        Actor["Actor<br/>可训练 LoRA"]
+        Reference["Reference<br/>冻结的 SFT LoRA"]
+    end
+    Actor --> Sequence["Prompt 与采样回答"]
+    Sequence --> Reference
+    Sequence --> Reward
+    Sequence --> Critic
+    subgraph ValueBase["一个冻结的奖励／价值底座"]
+        Reward["Reward Model<br/>冻结 LoRA 与标量头"]
+        Critic["Critic<br/>可训练 LoRA 与价值头"]
+    end
+    Actor -->|"保存采样策略的 log probability"| KL["逐 token KL 惩罚"]
+    Reference -->|"参考策略的 log probability"| KL
+    KL --> Rewards["逐 token 奖励"]
+    Reward -->|"裁剪后的终止奖励"| Rewards
+    Rewards --> GAE["GAE 优势与回报"]
+    Critic -->|"保存采样时的价值估计"| GAE
+    GAE --> Update["PPO 更新<br/>策略裁剪损失与价值裁剪损失"]
+    Update -->|"Actor 优化器"| Actor
+    Update -->|"Critic 优化器"| Critic
+```
+
+Reference 和 Reward 的参数在 PPO 中始终冻结。每组 rollout 按配置执行多次 PPO 更新，然后重新采样回答。
+
 ## 快速开始
 
 使用原生 **arm64 Python 3.11 或更新版本**及支持 MPS 的 macOS。本项目实际验证使用 Python 3.11 和 PyTorch 2.15.0。
